@@ -1,5 +1,5 @@
 % REF : prev gen (lenslet -> 4DLF) - (C&G Correction) 
-% REC : codec limitation YUV444@8bpp
+% REC : codec limitation YUV444@10bpp
 % representation_type: lenslet (requires LF toolbox + metadata), 4DLF_MI or 4DLF_PVS
 % metadata: is generated when we run gen_4DLF.m (e.g. I01_Bikes__Decoded.mat)
 
@@ -67,7 +67,14 @@ else
     rec_YUV444_10bpp(:,:,3) = V;
     clear Y U V
     if representation_type == 0 %% LENS
-        %% TODO
+        rec_RGB444_10bpp = single(ycbcr2rgb(double(rec_YUV444_10bpp) / 1023));
+        run('LFToolbox0.4/LFMatlabPathSetup')
+        [rec_4DLF_VIEWS_RGB444_10bpp, LFdec, LFWeight, DecodeOptions, CorrectedLensletImage] = DecodeLenslet_RGB444_10bpp( rec_RGB444_10bpp, metadata);
+        for i = 1:mi_size
+            for j = 1:mi_size
+                rec_4DLF_VIEWS(j,i,:,:,:) = uint16(rgb2ycbcr(double(squeeze(rec_4DLF_VIEWS_RGB444_10bpp(j,i,:,:,:)))) * 1023);
+            end
+        end
     elseif representation_type == 1 %% 4DLF_MI
         rec_4DLF_VIEWS = deconstruct_lenslet_img10( uint16(rec_YUV444_10bpp), mi_size ); % 4DLF_MI to 4DLF_VIEWS
     end
