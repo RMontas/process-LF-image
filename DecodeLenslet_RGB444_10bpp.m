@@ -248,7 +248,7 @@ end
 DecodeOptions.Gamma = 1; %% current CFP
 DecodeOptions.ColourMatrix = [  2.4036 -0.4913 -0.3136 
                                -1.2089  1.6521 -0.9322
-                                0.1947 -0.1607  2.2458 ];
+                               -0.1947 -0.1607  2.2458 ];
 %DecodeOptions.ColourMatrix = eye(3); %%%%%%%% WO C&G CORRECTION
 % DecodeOptions.OptionalTasks = {[]};
 LFdecC = ColourCorrect( LFdec, LFMetadata, DecodeOptions );

@@ -16,18 +16,18 @@ run('LFToolbox0.4/LFMatlabPathSetup')
 
 % Creates the appropriate folders if they don't exist
 if (use_MI)
-    if (~exist('4DLF_MI', 'dir'))
-        mkdir('4DLF_MI');
+    if (~exist('4DLF_MI_BT709', 'dir'))
+        mkdir('4DLF_MI_BT709');
     end
 end
 if (use_PVS)
-    if (~exist('4DLF_PVS', 'dir'))
-        mkdir('4DLF_PVS');
+    if (~exist('4DLF_PVS_BT709', 'dir'))
+        mkdir('4DLF_PVS_BT709');
     end
 end
 if (use_VI)
-    if (~exist('4DLF_VI', 'dir'))
-        mkdir('4DLF_VI');
+    if (~exist('4DLF_VI_BT709', 'dir'))
+        mkdir('4DLF_VI_BT709');
     end
 end
 if (~exist('thumbnails', 'dir'))
@@ -67,18 +67,18 @@ nfiles = nfiles(1);
 
 % Creates the appropriate folders if they don't exist
 if (use_MI)
-    if (~exist('4DLF_MI', 'dir'))
-        mkdir('4DLF_MI');
+    if (~exist('4DLF_MI_BT709', 'dir'))
+        mkdir('4DLF_MI_BT709');
     end
 end
 if (use_PVS)
-    if (~exist('4DLF_PVS', 'dir'))
-        mkdir('4DLF_PVS');
+    if (~exist('4DLF_PVS_BT709', 'dir'))
+        mkdir('4DLF_PVS_BT709');
     end
 end
 if (use_VI)
-    if (~exist('4DLF_VI', 'dir'))
-        mkdir('4DLF_VI');
+    if (~exist('4DLF_VI_BT709', 'dir'))
+        mkdir('4DLF_VI_BT709');
     end
 end
 if (~exist('thumbnails', 'dir'))
@@ -86,7 +86,7 @@ if (~exist('thumbnails', 'dir'))
 end
 
 % Cycle through the files to convert
-for i = 2:2
+for i = 9:9
 %for i = 1:nfiles
 %for i = 1:1
     [path, name, ~] = fileparts(listing(i).name);
@@ -131,9 +131,9 @@ for i = 2:2
     
     % RGB 2 YUV conversion
     if use_10bpp == 1
-        lenslet_yuv_img = uint16(rgb2ycbcr(double(lenslet_rgb_img) / 1023) * 1023);
+        lenslet_yuv_img = rgb2ycbcr10bit_BT709(lenslet_rgb_img);
     else
-        lenslet_yuv_img = rgb2ycbcr(lenslet_rgb_img);
+        lenslet_yuv_img = rgb2ycbcr10bit_BT709(lenslet_rgb_img);
     end
     
     if (use_MI)
@@ -141,87 +141,87 @@ for i = 2:2
         if use_10bpp == 1
             lenslet_yuv420_img = downsample10(lenslet_yuv_img);
             % RGB Actual writing
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_RGB444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_RGB444_10bpp.rgb'), 'w' );
             fwrite(fileID, permute(lenslet_rgb_img, [2 1 3]), 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_R444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_R444_10bpp.rgb'), 'w' );
             fwrite(fileID, lenslet_rgb_img(:, :, 1)', 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_G444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_G444_10bpp.rgb'), 'w' );
             fwrite(fileID, lenslet_rgb_img(:, :, 2)', 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_B444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_B444_10bpp.rgb'), 'w' );
             fwrite(fileID, lenslet_rgb_img(:, :, 3)', 'uint16');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_YUV444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_YUV444_10bpp.yuv'), 'w' );
             fwrite(fileID, permute(lenslet_yuv_img, [2 1 3]), 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_Y444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_Y444_10bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv_img(:, :, 1)', 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_U444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_U444_10bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv_img(:, :, 2)', 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_V444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_V444_10bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv_img(:, :, 3)', 'uint16');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_YUV420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_YUV420_10bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{1}', 'uint16');
             fwrite(fileID, lenslet_yuv420_img{2}', 'uint16');
             fwrite(fileID, lenslet_yuv420_img{3}', 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_Y420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_Y420_10bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{1}', 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_U420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_U420_10bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{2}', 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_V420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_V420_10bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{3}', 'uint16');
             fclose(fileID);
         else
             lenslet_yuv420_img = downsample(lenslet_yuv_img);
             % RGB Actual writing
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_RGB444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_RGB444_8bpp.rgb'), 'w' );
             fwrite(fileID, permute(lenslet_rgb_img, [2 1 3]), 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_R444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_R444_8bpp.rgb'), 'w' );
             fwrite(fileID, lenslet_rgb_img(:, :, 1)', 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_G444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_G444_8bpp.rgb'), 'w' );
             fwrite(fileID, lenslet_rgb_img(:, :, 2)', 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_B444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_B444_8bpp.rgb'), 'w' );
             fwrite(fileID, lenslet_rgb_img(:, :, 3)', 'uint8');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_YUV444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_YUV444_8bpp.yuv'), 'w' );
             fwrite(fileID, permute(lenslet_yuv_img, [2 1 3]), 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_Y444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_Y444_8bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv_img(:, :, 1)', 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_U444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_U444_8bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv_img(:, :, 2)', 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_V444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_V444_8bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv_img(:, :, 3)', 'uint8');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_YUV420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_YUV420_8bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{1}', 'uint8');
             fwrite(fileID, lenslet_yuv420_img{2}', 'uint8');
             fwrite(fileID, lenslet_yuv420_img{3}', 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_Y420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_Y420_8bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{1}', 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_U420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_U420_8bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{2}', 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_MI/', name, '_V420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_MI_BT709/', name, '_V420_8bpp.yuv'), 'w' );
             fwrite(fileID, lenslet_yuv420_img{3}', 'uint8');
             fclose(fileID);
         end
@@ -244,10 +244,10 @@ for i = 2:2
         
         if use_10bpp == 1
           %  lenslet_yuv_img = uint16(rgb2ycbcr(double(lenslet_rgb_img) / 1023) * 1023);
-            views_yuv_img = cat(4, views_yuv_img, uint16(rgb2ycbcr(double(squeeze(LF(ypos, xpos, :, :, 1:3)))/1023)*1023));
+            views_yuv_img = cat(4, views_yuv_img, rgb2ycbcr10bit_BT709(squeeze(LF(ypos, xpos, :, :, 1:3))));
         else
            % lenslet_yuv_img = rgb2ycbcr(lenslet_rgb_img);
-            views_yuv_img = cat(4, views_yuv_img, rgb2ycbcr(squeeze(LF(ypos, xpos, :, :, 1:3))));
+            views_yuv_img = cat(4, views_yuv_img, rgb2ycbcr10bit_BT709(squeeze(LF(ypos, xpos, :, :, 1:3))));
         end
         
         
@@ -275,31 +275,31 @@ for i = 2:2
     if (use_PVS)
         if use_10bpp == 1
             % RGB Actual writing
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_RGB444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_RGB444_10bpp.rgb'), 'w' );
             fwrite(fileID, permute(views_rgb_img, [2 1 3 4]), 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_R444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_R444_10bpp.rgb'), 'w' );
             fwrite(fileID, permute(squeeze(views_rgb_img(:, :, 1, :)), [2 1 3]), 'uint16');
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_G444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_G444_10bpp.rgb'), 'w' );
             fwrite(fileID, permute(squeeze(views_rgb_img(:, :, 2, :)), [2 1 3]), 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_B444_10bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_B444_10bpp.rgb'), 'w' );
             fwrite(fileID, permute(squeeze(views_rgb_img(:, :, 3, :)), [2 1 3]), 'uint16');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_YUV444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_YUV444_10bpp.yuv'), 'w' );
             fwrite(fileID, permute(views_yuv_img, [2 1 3 4]), 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_Y444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_Y444_10bpp.yuv'), 'w' );
             fwrite(fileID, permute(squeeze(views_yuv_img(:, :, 1, :)), [2 1 3]), 'uint16');
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_U444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_U444_10bpp.yuv'), 'w' );
             fwrite(fileID, permute(squeeze(views_yuv_img(:, :, 2, :)), [2 1 3]), 'uint16');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_V444_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_V444_10bpp.yuv'), 'w' );
             fwrite(fileID, permute(squeeze(views_yuv_img(:, :, 3, :)), [2 1 3]), 'uint16');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_YUV420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_YUV420_10bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample10(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{1}', 'uint16');
@@ -307,19 +307,19 @@ for i = 2:2
                 fwrite(fileID, views_yuv420_img{3}', 'uint16');
             end
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_Y420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_Y420_10bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample10(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{1}', 'uint16');
             end
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_U420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_U420_10bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample10(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{2}', 'uint16');
             end
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_V420_10bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_V420_10bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample10(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{3}', 'uint16');
@@ -327,31 +327,31 @@ for i = 2:2
             fclose(fileID);
         else
             % RGB Actual writing
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_RGB444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_RGB444_8bpp.rgb'), 'w' );
             fwrite(fileID, permute(views_rgb_img, [2 1 3 4]), 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_R444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_R444_8bpp.rgb'), 'w' );
             fwrite(fileID, permute(squeeze(views_rgb_img(:, :, 1, :)), [2 1 3]), 'uint8');
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_G444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_G444_8bpp.rgb'), 'w' );
             fwrite(fileID, permute(squeeze(views_rgb_img(:, :, 2, :)), [2 1 3]), 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_B444_8bpp.rgb'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_B444_8bpp.rgb'), 'w' );
             fwrite(fileID, permute(squeeze(views_rgb_img(:, :, 3, :)), [2 1 3]), 'uint8');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_YUV444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_YUV444_8bpp.yuv'), 'w' );
             fwrite(fileID, permute(views_yuv_img, [2 1 3 4]), 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_Y444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_Y444_8bpp.yuv'), 'w' );
             fwrite(fileID, permute(squeeze(views_yuv_img(:, :, 1, :)), [2 1 3]), 'uint8');
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_U444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_U444_8bpp.yuv'), 'w' );
             fwrite(fileID, permute(squeeze(views_yuv_img(:, :, 2, :)), [2 1 3]), 'uint8');
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_V444_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_V444_8bpp.yuv'), 'w' );
             fwrite(fileID, permute(squeeze(views_yuv_img(:, :, 3, :)), [2 1 3]), 'uint8');
             fclose(fileID);
             % YUV Actual writing
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_YUV420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_YUV420_8bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{1}', 'uint8');
@@ -359,19 +359,19 @@ for i = 2:2
                 fwrite(fileID, views_yuv420_img{3}', 'uint8');
             end
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_Y420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_Y420_8bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{1}', 'uint8');
             end
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_U420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_U420_8bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{2}', 'uint8');
             end
             fclose(fileID);
-            fileID = fopen( strcat(path, '4DLF_PVS/', name, '_V420_8bpp.yuv'), 'w' );
+            fileID = fopen( strcat(path, '4DLF_PVS_BT709/', name, '_V420_8bpp.yuv'), 'w' );
             for v = 1:num_MIs*num_MIs
                 views_yuv420_img = downsample(views_yuv_img(:,:,:,v));
                 fwrite(fileID, views_yuv420_img{3}', 'uint8');
@@ -408,9 +408,9 @@ for i = 2:2
         
         % RGB 2 YUV conversion
         if use_10bpp == 1
-            views_yuv_imgVI = uint16(rgb2ycbcr(double(views_rgb_imgVI) / 1023) * 1023);
+            views_yuv_imgVI = uint16(rgb2ycbcr10bit_BT709(double(views_rgb_imgVI) / 1023) * 1023);
         else
-            views_yuv_imgVI = rgb2ycbcr(views_rgb_imgVI);
+            views_yuv_imgVI = rgb2ycbcr10bit_BT709(views_rgb_imgVI);
         end
         
         if (use_VI)
@@ -418,87 +418,87 @@ for i = 2:2
             if use_10bpp == 1
                 views_yuv420_imgVI = downsample10(views_yuv_imgVI);
                 % RGB Actual writing
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_RGB444_10bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_RGB444_10bpp.rgb'), 'w' );
                 fwrite(fileID, permute(views_rgb_imgVI, [2 1 3]), 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_R444_10bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_R444_10bpp.rgb'), 'w' );
                 fwrite(fileID, views_rgb_imgVI(:, :, 1)', 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_G444_10bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_G444_10bpp.rgb'), 'w' );
                 fwrite(fileID, views_rgb_imgVI(:, :, 2)', 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_B444_10bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_B444_10bpp.rgb'), 'w' );
                 fwrite(fileID, views_rgb_imgVI(:, :, 3)', 'uint16');
                 fclose(fileID);
                 % YUV Actual writing
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_YUV444_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_YUV444_10bpp.yuv'), 'w' );
                 fwrite(fileID, permute(views_yuv_imgVI, [2 1 3]), 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_Y444_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_Y444_10bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv_imgVI(:, :, 1)', 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_U444_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_U444_10bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv_imgVI(:, :, 2)', 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_V444_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_V444_10bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv_imgVI(:, :, 3)', 'uint16');
                 fclose(fileID);
                 % YUV Actual writing
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_YUV420_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_YUV420_10bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{1}', 'uint16');
                 fwrite(fileID, views_yuv420_imgVI{2}', 'uint16');
                 fwrite(fileID, views_yuv420_imgVI{3}', 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_Y420_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_Y420_10bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{1}', 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_U420_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_U420_10bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{2}', 'uint16');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_V420_10bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_V420_10bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{3}', 'uint16');
                 fclose(fileID);
             else
                 views_yuv420_imgVI = downsample(views_yuv_imgVI);
                 % RGB Actual writing
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_RGB444_8bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_RGB444_8bpp.rgb'), 'w' );
                 fwrite(fileID, permute(views_rgb_imgVI, [2 1 3]), 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_R444_8bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_R444_8bpp.rgb'), 'w' );
                 fwrite(fileID, views_rgb_imgVI(:, :, 1)', 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_G444_8bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_G444_8bpp.rgb'), 'w' );
                 fwrite(fileID, views_rgb_imgVI(:, :, 2)', 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_B444_8bpp.rgb'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_B444_8bpp.rgb'), 'w' );
                 fwrite(fileID, views_rgb_imgVI(:, :, 3)', 'uint8');
                 fclose(fileID);
                 % YUV Actual writing
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_YUV444_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_YUV444_8bpp.yuv'), 'w' );
                 fwrite(fileID, permute(views_yuv_imgVI, [2 1 3]), 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_Y444_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_Y444_8bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv_imgVI(:, :, 1)', 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_U444_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_U444_8bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv_imgVI(:, :, 2)', 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_V444_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_V444_8bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv_imgVI(:, :, 3)', 'uint8');
                 fclose(fileID);
                 % YUV Actual writing
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_YUV420_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_YUV420_8bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{1}', 'uint8');
                 fwrite(fileID, views_yuv420_imgVI{2}', 'uint8');
                 fwrite(fileID, views_yuv420_imgVI{3}', 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_Y420_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_Y420_8bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{1}', 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_U420_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_U420_8bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{2}', 'uint8');
                 fclose(fileID);
-                fileID = fopen( strcat(path, '4DLF_VI/', name, '_V420_8bpp.yuv'), 'w' );
+                fileID = fopen( strcat(path, '4DLF_VI_BT709/', name, '_V420_8bpp.yuv'), 'w' );
                 fwrite(fileID, views_yuv420_imgVI{3}', 'uint8');
                 fclose(fileID);
             end
