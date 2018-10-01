@@ -1,4 +1,4 @@
-use_10bpp = 1;
+use_10bpp = 0;
 use_13x13 = 1;
 use_MI = 1;
 use_PVS = 1;
