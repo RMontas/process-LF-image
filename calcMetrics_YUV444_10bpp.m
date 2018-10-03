@@ -17,6 +17,21 @@
 
 function [] = calcMetrics_YUV444_10bpp(REF, REC, representation_type, H, W, mi_size, metadata, output_folder)
 
+num_Layers = 6;
+layerMask =  [ 6 6 4 6 3 6 4 6 3 6 4 6 6 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               4 6 2 6 4 6 2 6 4 6 2 6 4 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               3 6 4 6 3 6 4 6 3 6 4 6 3 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               4 6 2 6 4 6 1 6 4 6 2 6 4 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               3 6 4 6 3 6 4 6 3 6 4 6 3 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               4 6 2 6 4 6 2 6 4 6 2 6 4 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               6 6 4 6 3 6 4 6 3 6 4 6 6 ];
+
 % process REF
 if mi_size == 15
     W_REF = 9376;
@@ -38,20 +53,39 @@ timestamp = strcat(num2str(timestamp(4),2),num2str(timestamp(5),2),num2str(times
 imwrite(ycbcr2rgb(squeeze(ref_4DLF_VIEWS((mi_size+1)/2,(mi_size+1)/2,:,:,1:3))*64), strcat(output_folder, 'REF_central_view_',timestamp,'.png'), 'png');
 
 % process REC
-if representation_type == 2 %% 4DLF_PVS
+if representation_type == 2 || representation_type == 3 %% 4DLF_PVS abd 4DLF_PVS_SCL
     % convert to YUV444@10bpp and compare
     cc_spiral = spiral(mi_size);
     f = fopen(REC,'r');
-    for j = 1:mi_size
-        for i = 1:mi_size
-            [ypos, xpos] = find(cc_spiral == (j-1)*mi_size + i);
-            Y = fread(f, [W H], 'uint16');
-            U = fread(f, [W H], 'uint16');
-            V = fread(f, [W H], 'uint16');
-            Y = Y'; U = U'; V = V';
-            rec_4DLF_VIEWS(ypos,xpos,:,:,1) = uint16(Y(1:434,1:625));
-            rec_4DLF_VIEWS(ypos,xpos,:,:,2) = uint16(U(1:434,1:625));
-            rec_4DLF_VIEWS(ypos,xpos,:,:,3) = uint16(V(1:434,1:625));
+    if representation_type == 2
+        for j = 1:mi_size
+            for i = 1:mi_size
+                [ypos, xpos] = find(cc_spiral == (j-1)*mi_size + i);
+                Y = fread(f, [W H], 'uint16');
+                U = fread(f, [W H], 'uint16');
+                V = fread(f, [W H], 'uint16');
+                Y = Y'; U = U'; V = V';
+                rec_4DLF_VIEWS(ypos,xpos,:,:,1) = uint16(Y(1:434,1:625));
+                rec_4DLF_VIEWS(ypos,xpos,:,:,2) = uint16(U(1:434,1:625));
+                rec_4DLF_VIEWS(ypos,xpos,:,:,3) = uint16(V(1:434,1:625));
+            end
+        end
+    else %% 4DLF_PVS_SCL
+        for l = 1:num_Layers
+            for j = 1:mi_size
+                for i = 1:mi_size
+                    [ypos, xpos] = find(cc_spiral == (j-1)*mi_size + i);
+                    if layerMask(ypos,xpos) == l 
+                        Y = fread(f, [W H], 'uint16');
+                        U = fread(f, [W H], 'uint16');
+                        V = fread(f, [W H], 'uint16');
+                        Y = Y'; U = U'; V = V';
+                        rec_4DLF_VIEWS(ypos,xpos,:,:,1) = uint16(Y(1:434,1:625));
+                        rec_4DLF_VIEWS(ypos,xpos,:,:,2) = uint16(U(1:434,1:625));
+                        rec_4DLF_VIEWS(ypos,xpos,:,:,3) = uint16(V(1:434,1:625));
+                    end
+                end
+            end
         end
     end
     fclose(f);

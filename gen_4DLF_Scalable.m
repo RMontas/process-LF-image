@@ -51,8 +51,8 @@ end
 % Creates a parallel pool to speed up the process
 if isempty(gcp('nocreate'))
     myCluster = parcluster('local');
-    myCluster.NumWorkers = 8;
-    parpool(myCluster, 8)
+    myCluster.NumWorkers = 4;
+    parpool(myCluster, 4)
 end
 
 % Setup the appropriate path for the LF toolbox
@@ -88,8 +88,8 @@ end
 
 % Cycle through the files to convert
 %for i = 2:2
-%for i = 1:nfiles
-for i = 1:1
+for i = 1:nfiles
+%for i = 1:1
     [path, name, ~] = fileparts(listing(i).name);
     if use_13x13 == 1
         name = strcat(name, '_13x13');
