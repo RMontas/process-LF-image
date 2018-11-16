@@ -17,6 +17,21 @@
 
 function [] = calcMetrics_YUV420_8bpp(REF, REC, representation_type, H, W, mi_size, metadata, output_folder)
 
+num_Layers = 6;
+layerMask =  [ 6 6 4 6 3 6 4 6 3 6 4 6 6 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               4 6 2 6 4 6 2 6 4 6 2 6 4 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               3 6 4 6 3 6 4 6 3 6 4 6 3 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               4 6 2 6 4 6 1 6 4 6 2 6 4 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               3 6 4 6 3 6 4 6 3 6 4 6 3 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               4 6 2 6 4 6 2 6 4 6 2 6 4 ;
+               6 5 6 5 6 5 6 5 6 5 6 5 6 ;
+               6 6 4 6 3 6 4 6 3 6 4 6 6 ];
+
 % process REF
 if mi_size == 15
     W_REF = 9376;
@@ -38,21 +53,41 @@ timestamp = strcat(num2str(timestamp(4),2),num2str(timestamp(5),2),num2str(times
 imwrite(ycbcr2rgb(squeeze(ref_4DLF_VIEWS((mi_size+1)/2,(mi_size+1)/2,:,:,1:3))*64), strcat(output_folder, 'REF_central_view_',timestamp,'.png'), 'png');
 
 % process REC
-if representation_type == 2 %% 4DLF_PVS
+if representation_type == 2 || representation_type == 3 %% 4DLF_PVS abd 4DLF_PVS_SCL
     % convert to YUV444@10bpp and compare
     cc_spiral = spiral(mi_size);
     f = fopen(REC,'r');
-    for j = 1:mi_size
-        for i = 1:mi_size
-            [ypos, xpos] = find(cc_spiral == (j-1)*mi_size + i);
-            Y = fread(f, [W H], 'uint8');
-            U = fread(f, [W/2 H/2], 'uint8');
-            V = fread(f, [W/2 H/2], 'uint8');
-            rec_YUV420_8bpp{1,1} = double(Y');
-            rec_YUV420_8bpp{2,1} = double(U');
-            rec_YUV420_8bpp{3,1} = double(V');
-            rec_YUV444_8bpp = upsample(rec_YUV420_8bpp); % upsample 8bpp 444 to 420
-            rec_4DLF_VIEWS(ypos,xpos,:,:,:) = uint16(double(rec_YUV444_8bpp(1:434,1:625,:)) * 4); % upsample 8bpp to 10bpp
+    if representation_type == 2
+        for j = 1:mi_size
+            for i = 1:mi_size
+                [ypos, xpos] = find(cc_spiral == (j-1)*mi_size + i);
+                Y = fread(f, [W H], 'uint8');
+                U = fread(f, [W/2 H/2], 'uint8');
+                V = fread(f, [W/2 H/2], 'uint8');
+                rec_YUV420_8bpp{1,1} = double(Y');
+                rec_YUV420_8bpp{2,1} = double(U');
+                rec_YUV420_8bpp{3,1} = double(V');
+                rec_YUV444_8bpp = upsample(rec_YUV420_8bpp); % upsample 8bpp 444 to 420
+                rec_4DLF_VIEWS(ypos,xpos,:,:,:) = uint16(double(rec_YUV444_8bpp(1:434,1:625,:)) * 4); % upsample 8bpp to 10bpp
+            end
+        end
+    else %% 4DLF_PVS_SCL
+        for l = 1:num_Layers
+            for j = 1:mi_size
+                for i = 1:mi_size
+                    [ypos, xpos] = find(cc_spiral == (j-1)*mi_size + i);
+                    if layerMask(ypos,xpos) == l
+                        Y = fread(f, [W H], 'uint8');
+                        U = fread(f, [W/2 H/2], 'uint8');
+                        V = fread(f, [W/2 H/2], 'uint8');
+                        rec_YUV420_8bpp{1,1} = double(Y');
+                        rec_YUV420_8bpp{2,1} = double(U');
+                        rec_YUV420_8bpp{3,1} = double(V');
+                        rec_YUV444_8bpp = upsample(rec_YUV420_8bpp); % upsample 8bpp 444 to 420
+                        rec_4DLF_VIEWS(ypos,xpos,:,:,:) = uint16(double(rec_YUV444_8bpp(1:434,1:625,:)) * 4); % upsample 8bpp to 10bpp
+                    end
+                end
+            end
         end
     end
     fclose(f);
