@@ -1,7 +1,8 @@
 use_10bpp = 1;
 use_13x13 = 1;
-use_MI = 1;
-use_PVS = 1;
+use_MI = 0;
+use_PVS = 0;
+use_PVS_YUV422_10 = 1;
 use_VI = 0; %% TODO 
 
 if use_13x13 == 1
@@ -86,8 +87,8 @@ if (~exist('thumbnails', 'dir'))
 end
 
 % Cycle through the files to convert
-for i = 2:2
-%for i = 1:nfiles
+%for i = 2:2
+for i = 1:nfiles
 %for i = 1:1
     [path, name, ~] = fileparts(listing(i).name);
     if use_13x13 == 1
@@ -272,6 +273,19 @@ for i = 2:2
         fprintf('Views rectified resolution: %d %d\n', Y, X);
     end
     
+    if (use_PVS_YUV422_10)
+        %%%%YUV 422
+        fileID = fopen( strcat(path, '4DLF_PVS/', name, '_YUV422_10bpp.yuv'), 'w' );
+        for v = 1:num_MIs*num_MIs
+            views_yuv422_img = downsample10_YUV444_to_YUV422(views_yuv_img(:,:,:,v));
+            fwrite(fileID, views_yuv422_img{1}', 'uint16');
+            fwrite(fileID, views_yuv422_img{2}', 'uint16');
+            fwrite(fileID, views_yuv422_img{3}', 'uint16');
+        end
+        fclose(fileID);
+        %%%%YUV 422
+    end
+            
     if (use_PVS)
         if use_10bpp == 1
             % RGB Actual writing
