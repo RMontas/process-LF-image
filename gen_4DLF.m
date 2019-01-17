@@ -1,8 +1,9 @@
 use_10bpp = 1;
-use_13x13 = 1;
+use_13x13 = 0;
 use_MI = 0;
 use_PVS = 0;
 use_PVS_YUV422_10 = 1;
+use_PVS_SERPENTINE = 1;
 use_VI = 0; %% TODO 
 
 if use_13x13 == 1
@@ -24,6 +25,11 @@ end
 if (use_PVS)
     if (~exist('4DLF_PVS', 'dir'))
         mkdir('4DLF_PVS');
+    end
+end
+if (use_PVS_SERPENTINE)
+    if (~exist('4DLF_PVS_SERPENTINE', 'dir'))
+        mkdir('4DLF_PVS_SERPENTINE');
     end
 end
 if (use_VI)
@@ -285,7 +291,7 @@ for i = 1:nfiles
         fclose(fileID);
         %%%%YUV 422
     end
-            
+    
     if (use_PVS)
         if use_10bpp == 1
             % RGB Actual writing
@@ -392,6 +398,74 @@ for i = 1:nfiles
             end
             fclose(fileID);
         end
+    end
+    
+    if(use_PVS_SERPENTINE)
+        
+        views_rgb_img = [];% zeros(Y, X, Z - 1, mv_size * mv_size);
+        views_yuv_img = [];
+        views_yuv420_img = [];
+        
+        for y = 1:num_MIs
+            for x = 1:num_MIs
+                ypos = y;
+                %[ypos, xpos] = find(cc_spiral == j);
+                if mod(y,2) == 1
+                   xpos = x; 
+                else
+                   xpos = 1 + num_MIs - x;
+                end
+                
+                if use_13x13
+                    xpos = xpos + 1;
+                    ypos = ypos + 1;
+                end
+                
+                views_rgb_img = cat(4, views_rgb_img, squeeze(LF(ypos, xpos, :, :, 1:3)));
+                %views_yuv_img = cat(4, views_yuv_img, rgb2ycbcr(squeeze(LF(ypos, xpos, :, :, 1:3))));
+                
+                if use_10bpp == 1
+                    %  lenslet_yuv_img = uint16(rgb2ycbcr(double(lenslet_rgb_img) / 1023) * 1023);
+                    views_yuv_img = cat(4, views_yuv_img, uint16(rgb2ycbcr(double(squeeze(LF(ypos, xpos, :, :, 1:3)))/1023)*1023));
+                else
+                    % lenslet_yuv_img = rgb2ycbcr(lenslet_rgb_img);
+                    %views_yuv_img = cat(4, views_yuv_img, rgb2ycbcr(squeeze(LF(ypos, xpos, :, :, 1:3))));
+                end
+                
+            end
+        end
+        
+        % Operations to adapt the resolution
+        [Y, X, C, Z] = size(views_rgb_img);
+        
+        while (mod(Y, 8) ~= 0)
+            views_rgb_img(end + 1, :, :, :) = views_rgb_img(end, :, :, :);
+            views_yuv_img(end + 1, :, :, :) = views_yuv_img(end, :, :, :);
+            [Y, X, C, Z] = size(views_rgb_img);
+        end
+        
+        while (mod(X, 8) ~= 0)
+            views_rgb_img(:, end + 1, :, :) = views_rgb_img(:, end, :, :);
+            views_yuv_img(:, end + 1, :, :) = views_yuv_img(:, end, :, :);
+            [Y, X, C, Z] = size(views_rgb_img);
+        end
+        
+        if (i == 1)
+            fprintf('Views rectified resolution: %d %d\n', Y, X);
+        end
+        
+  
+        %%%%YUV 422
+        fileID = fopen( strcat(path, '4DLF_PVS_SERPENTINE/', name, '_YUV422_10bpp.yuv'), 'w' );
+        for v = 1:num_MIs*num_MIs
+            views_yuv422_img = downsample10_YUV444_to_YUV422(views_yuv_img(:,:,:,v));
+            fwrite(fileID, views_yuv422_img{1}', 'uint16');
+            fwrite(fileID, views_yuv422_img{2}', 'uint16');
+            fwrite(fileID, views_yuv422_img{3}', 'uint16');
+        end
+        fclose(fileID);
+        %%%%YUV 422
+        
     end
     
     %% Views Image - All the views concatenated in one single frame

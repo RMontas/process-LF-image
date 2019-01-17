@@ -22,7 +22,7 @@ layerMask =  [ 6 6 4 6 3 6 4 6 3 6 4 6 6 ;
                6 5 6 5 6 5 6 5 6 5 6 5 6 ;
                6 6 4 6 3 6 4 6 3 6 4 6 6 ];
 
-use_10bpp = 1;
+use_10bpp = 0;
 use_13x13 = 1; %% 13x13 only
 %use_MI = 1;
 use_PVS_Scalable = 1;
